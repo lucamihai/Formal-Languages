@@ -55,6 +55,12 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UserControls\PushDown.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\PushDown.Designer.cs">
+      <DependentUpon>PushDown.cs</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\StringGenerator.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -73,6 +79,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="UserControls\PushDown.resx">
+      <DependentUpon>PushDown.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UserControls\StringGenerator.resx">
       <DependentUpon>StringGenerator.cs</DependentUpon>
     </EmbeddedResource>
