@@ -83,9 +83,9 @@ namespace Formal_Language.UserControls
                 {
                     cuvinte = fileContentsArray[fileLine].Split();
 
-                    for (int secondIndex = 0; secondIndex < cuvinte.Length - 1; secondIndex++)
+                    for (int secondIndex = 0; secondIndex < cuvinte.Length; secondIndex++)
                     {
-                        actiuni[fileLine, secondIndex] = cuvinte[secondIndex];
+                        actiuni[fileLine - 3, secondIndex] = cuvinte[secondIndex];
                     }
                 }
 
@@ -104,13 +104,14 @@ namespace Formal_Language.UserControls
 
                 // ----- Citire terminale salturi :|
                 fileLine++;
-                for (; fileLine < fileLine + stari.Length; fileLine++)
+                int oldFileLine = fileLine;
+                for (; fileLine < oldFileLine + stari.Length; fileLine++)
                 {
                     cuvinte = fileContentsArray[fileLine].Split();
 
                     for (int secondIndex = 0; secondIndex < cuvinte.Length; secondIndex++)
                     {
-                        salt[fileLine, secondIndex] = cuvinte[secondIndex];
+                        salt[fileLine - oldFileLine, secondIndex] = cuvinte[secondIndex];
                     }
                 }
 
