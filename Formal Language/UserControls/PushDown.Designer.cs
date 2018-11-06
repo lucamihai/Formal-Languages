@@ -32,6 +32,7 @@
             this.textBoxOutput = new System.Windows.Forms.TextBox();
             this.buttonOpenFile = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
+            this.buttonGenerate = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // openFileDialog1
@@ -40,7 +41,7 @@
             // 
             // textBoxOutput
             // 
-            this.textBoxOutput.Location = new System.Drawing.Point(147, 132);
+            this.textBoxOutput.Location = new System.Drawing.Point(147, 190);
             this.textBoxOutput.Multiline = true;
             this.textBoxOutput.Name = "textBoxOutput";
             this.textBoxOutput.Size = new System.Drawing.Size(285, 86);
@@ -59,16 +60,27 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(89, 135);
+            this.label1.Location = new System.Drawing.Point(89, 193);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(52, 17);
             this.label1.TabIndex = 2;
             this.label1.Text = "Result:";
             // 
+            // buttonGenerate
+            // 
+            this.buttonGenerate.Location = new System.Drawing.Point(147, 135);
+            this.buttonGenerate.Name = "buttonGenerate";
+            this.buttonGenerate.Size = new System.Drawing.Size(86, 38);
+            this.buttonGenerate.TabIndex = 3;
+            this.buttonGenerate.Text = "Generate";
+            this.buttonGenerate.UseVisualStyleBackColor = true;
+            this.buttonGenerate.Click += new System.EventHandler(this.buttonGenerate_Click);
+            // 
             // PushDown
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.buttonGenerate);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.buttonOpenFile);
             this.Controls.Add(this.textBoxOutput);
@@ -85,5 +97,6 @@
         private System.Windows.Forms.TextBox textBoxOutput;
         private System.Windows.Forms.Button buttonOpenFile;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button buttonGenerate;
     }
 }

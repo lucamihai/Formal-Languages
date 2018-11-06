@@ -32,3 +32,4 @@ T T*F
 T F
 F (E)
 F id
+$ 0

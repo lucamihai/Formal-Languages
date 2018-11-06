@@ -19,7 +19,10 @@ namespace Formal_Language.UserControls
         string[] terminale;
         string[] stari;
         string[] terminaleSalt;
-        
+        string[] vectorStart;
+
+        List<string> result = new List<string>();
+
 
         Stack<string> stivaIntrare;
 
@@ -117,15 +120,26 @@ namespace Formal_Language.UserControls
                     }
                 }
 
+
+                // ----- Productii
                 int size = fileContentsArray.Length - fileLine;
                 productii = new string[size + 1, 2];
                 int numarProductie = 1;
-                for (; fileLine < fileContentsArray.Length; fileLine++, numarProductie++)
+                for (; fileLine < fileContentsArray.Length - 1; fileLine++, numarProductie++)
                 {
                     cuvinte = fileContentsArray[fileLine].Split();
 
                     productii[numarProductie, 0] = cuvinte[1];
                     productii[numarProductie, 1] = cuvinte[0];
+                }
+
+
+                // ----- Start
+                cuvinte = fileContentsArray[fileContentsArray.Length - 1].Split();
+                vectorStart = new string[cuvinte.Length];
+                for (int index = 0; index<cuvinte.Length; index++)
+                {
+                    vectorStart[index] = cuvinte[index];
                 }
 
             }
@@ -134,6 +148,97 @@ namespace Formal_Language.UserControls
             {
                 textBoxOutput.Text = "Data couldn't be read... Make sure you selected a file.";
             }
+        }
+
+        private void buttonGenerate_Click(object sender, EventArgs e)
+        {
+            result = new List<string>();
+
+            foreach (string start in vectorStart)
+                result.Add(start);
+        }
+
+        List<string> GeneratePushDown(List<string> lista)
+        {
+            string lastElement = lista.Last();
+
+            try
+            {
+                int linie = Convert.ToInt32(lastElement);
+                string intrare = stivaIntrare.Peek();
+                int coloana = GasesteIndexTerminal(terminale, intrare);
+
+                if (coloana < 0)
+                {
+                    coloana = GasesteIndexSalt(terminaleSalt, intrare);
+                }
+
+                string actiune = actiuni[linie, coloana];
+
+                if (actiune[0] == 'd')
+                {
+                    lista.Add( stivaIntrare.Pop() );
+                    lista.Add( actiune[1].ToString() );
+
+                    return GeneratePushDown(lista);
+                }
+
+                if (actiune[0] == 'r')
+                {
+                    int numarProductie = Convert.ToInt32(actiune[1]);
+
+
+                }
+
+                return lista;
+            }
+
+            catch(Exception e)
+            {
+
+            }
+
+            return lista;
+        }
+
+        int GasesteIndexTerminal(string[] terminale, string terminalCautat)
+        {
+            for (int index = 0; index < terminale.Length; index++)
+            {
+                if (terminale[index] == terminalCautat)
+                {
+                    return index;
+                }
+            }
+
+            return -1;
+        }
+
+        int GasesteIndexSalt(string[] salturi, string saltCautat)
+        {
+            for (int index = 0; index < salturi.Length; index++)
+            {
+                if (salturi[index] == saltCautat)
+                {
+                    return index;
+                }
+            }
+
+            return -1;
+        }
+
+        int GasesteIndexInlocuire(List<string> lista, string productie)
+        {
+            int indexMinim = -1;
+
+            for (int index = 0; index < productie.Length; index++)
+            {
+                int indexElement = lista.FindLastIndex( element => element == productie[index].ToString() );
+
+                indexMinim = (indexElement < indexMinim) ? indexElement : indexMinim;
+            }
+
+            return indexMinim;
         }
     }
 }
