@@ -14,10 +14,12 @@ namespace Formal_Language.UserControls
     {
         string[,] actiuni;
         string[,] salt;
+        string[,] productii;
 
         string[] terminale;
         string[] stari;
         string[] terminaleSalt;
+        
 
         Stack<string> stivaIntrare;
 
@@ -113,6 +115,17 @@ namespace Formal_Language.UserControls
                     {
                         salt[fileLine - oldFileLine, secondIndex] = cuvinte[secondIndex];
                     }
+                }
+
+                int size = fileContentsArray.Length - fileLine;
+                productii = new string[size + 1, 2];
+                int numarProductie = 1;
+                for (; fileLine < fileContentsArray.Length; fileLine++, numarProductie++)
+                {
+                    cuvinte = fileContentsArray[fileLine].Split();
+
+                    productii[numarProductie, 0] = cuvinte[1];
+                    productii[numarProductie, 1] = cuvinte[0];
                 }
 
             }
