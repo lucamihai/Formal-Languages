@@ -156,6 +156,13 @@ namespace Formal_Language.UserControls
 
             foreach (string start in vectorStart)
                 result.Add(start);
+
+            result = GeneratePushDown(result);
+            string stringResult = "";
+            foreach (string element in result)
+                stringResult += element + " ";
+
+            textBoxOutput.Text = stringResult;
         }
 
         List<string> GeneratePushDown(List<string> lista)
@@ -168,37 +175,112 @@ namespace Formal_Language.UserControls
                 string intrare = stivaIntrare.Peek();
                 int coloana = GasesteIndexTerminal(terminale, intrare);
 
+                // Daca este salt
                 if (coloana < 0)
                 {
                     coloana = GasesteIndexSalt(terminaleSalt, intrare);
+
+                    if (salt[linie, coloana] != "NULL")
+                    {
+                        lista.Add( salt[linie, coloana] );
+                        return GeneratePushDown(lista);
+                    }
+
+                    return lista;
                 }
 
-                string actiune = actiuni[linie, coloana];
-
-                if (actiune[0] == 'd')
+                // Daca este actiune
+                else
                 {
-                    lista.Add( stivaIntrare.Pop() );
-                    lista.Add( actiune[1].ToString() );
+                    string actiune = actiuni[linie, coloana];
 
-                    return GeneratePushDown(lista);
+                    if (actiune == "acc")
+                    {
+                        return lista;
+                    }
+
+                    if (actiune[0] == 'd')
+                    {
+                        lista.Add( stivaIntrare.Pop() );
+                        lista.Add( actiune[1].ToString() );
+
+                        return GeneratePushDown(lista);
+                    }
+
+                    if (actiune[0] == 'r')
+                    {
+                        int numarProductie = Convert.ToInt32( actiune[1].ToString() );
+                        string stergere = productii[numarProductie, 0];
+                        int indexStergere = GasesteIndexInlocuire(lista, stergere);
+
+                        lista.RemoveRange(indexStergere, lista.Count - indexStergere);
+                        lista.Add(productii[numarProductie, 1]);
+
+                        return GeneratePushDown(lista);
+                    }
+
+                    return lista;
                 }
 
-                if (actiune[0] == 'r')
-                {
-                    int numarProductie = Convert.ToInt32(actiune[1]);
-
-
-                }
-
-                return lista;
+                
             }
 
             catch(Exception e)
             {
+                string ultimulElement = lista.Last();
+                string penultimulElement = lista.ElementAt(lista.Count - 2);
 
+                int linie = Convert.ToInt32(penultimulElement);
+                int coloana = GasesteIndexTerminal(terminale, ultimulElement);
+
+                // Daca este salt
+                if (coloana < 0)
+                {
+                    coloana = GasesteIndexSalt(terminaleSalt, ultimulElement);
+
+                    if (salt[linie, coloana] != "NULL")
+                    {
+                        lista.Add( salt[linie, coloana] );
+                        return GeneratePushDown(lista);
+                    }
+
+                    return lista;
+                }
+
+                // Daca este actiune
+                else
+                {
+                    string actiune = actiuni[linie, coloana];
+
+                    if (actiune == "acc")
+                    {
+                        return lista;
+                    }
+
+                    if (actiune[0] == 'd')
+                    {
+                        lista.Add(stivaIntrare.Pop());
+                        lista.Add(actiune[1].ToString());
+
+                        return GeneratePushDown(lista);
+                    }
+
+                    if (actiune[0] == 'r')
+                    {
+                        int numarProductie = Convert.ToInt32( actiune[1].ToString() );
+                        string stergere = productii[numarProductie, 0];
+                        int indexStergere = GasesteIndexInlocuire(lista, stergere);
+
+                        lista.RemoveRange(indexStergere, lista.Count - indexStergere);
+                        lista.Add(productii[numarProductie, 1]);
+
+                        return GeneratePushDown(lista);
+                    }
+
+                    return lista;
+                }
             }
 
-            return lista;
         }
 
         int GasesteIndexTerminal(string[] terminale, string terminalCautat)
@@ -229,13 +311,23 @@ namespace Formal_Language.UserControls
 
         int GasesteIndexInlocuire(List<string> lista, string productie)
         {
-            int indexMinim = -1;
+            int indexMinim = 1000000;
 
             for (int index = 0; index < productie.Length; index++)
             {
-                int indexElement = lista.FindLastIndex( element => element == productie[index].ToString() );
+                for (int indexLista = 0; indexLista < lista.Count; indexLista++)
+                {
+                    string elementLista = lista.ElementAt(indexLista);
 
-                indexMinim = (indexElement < indexMinim) ? indexElement : indexMinim;
+                    foreach (char caracter in elementLista)
+                    {
+                        if (caracter == productie[index])
+                        {
+                            indexMinim = (indexLista < indexMinim) ? indexLista : indexMinim;
+                        }
+                            
+                    }
+                }
             }
 
             return indexMinim;
