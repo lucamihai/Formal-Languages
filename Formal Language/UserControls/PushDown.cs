@@ -12,136 +12,142 @@ namespace Formal_Language.UserControls
 {
     public partial class PushDown : UserControl
     {
-        string[,] actiuni;
+        string[,] actions;
         string[,] salt;
-        string[,] productii;
+        string[,] productions;
 
-        string[] terminale;
-        string[] stari;
+        string[] terminals;
+        string[] states;
         string[] terminaleSalt;
-        string[] vectorStart;
+        string[] startArray;
 
         List<string> result = new List<string>();
 
-
-        Stack<string> stivaIntrare;
+        Stack<string> entryStack;
+        string fileFirstRow;
 
         public PushDown()
         {
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Used to open a file, and populate arrays based on the info found in the file.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void buttonOpenFile_Click(object sender, EventArgs e)
         {
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
-                System.IO.StreamReader streamReader = new System.IO.StreamReader(openFileDialog1.FileName);
-                string line;
-                int lineCounter = 0;
-                stivaIntrare = new Stack<string>();
+                // Array used for every Split()
+                string[] words;
 
+
+                // ----- Store all rows in an array
+                System.IO.StreamReader streamReader = new System.IO.StreamReader(openFileDialog1.FileName);
                 string fileContents = streamReader.ReadToEnd();
-                string[] fileContentsArray = fileContents.Split(
+                string[] fileRows = fileContents.Split(
                     new[] { Environment.NewLine },
                     StringSplitOptions.None
                 );
 
-                string[] cuvinte;
+                // ----- Store first line (Entry stack) for reinitialization
+                fileFirstRow = fileRows[0];
 
-                // ----- First line
-                cuvinte = fileContentsArray[0].Split();
+                // ----- Second line (states)
+                words = fileRows[1].Split();
 
-                for (int index = cuvinte.Length - 1; index >= 0; index--)
+                states = new string[words.Length];
+
+                for (int index = 0; index < words.Length; index++)
                 {
-                    stivaIntrare.Push(cuvinte[index]);
+                    states[index] = words[index];
                 }
 
 
-                // ----- Second line
-                cuvinte = fileContentsArray[1].Split();
+                // ----- Third line (terminals)
+                words = fileRows[2].Split();
 
-                stari = new string[cuvinte.Length];
+                terminals = new string[words.Length];
 
-                for (int index = 0; index < cuvinte.Length; index++)
+                for (int index = 0; index < words.Length; index++)
                 {
-                    stari[index] = cuvinte[index];
+                    terminals[index] = words[index];
                 }
 
 
-                // ----- Third line
-                cuvinte = fileContentsArray[2].Split();
+                // ----- Fourth line -> Fourth line + number of states
+                // ----- (states / terminals combinations, aka actions)
+                actions = new string[states.Length, terminals.Length];
 
-                terminale = new string[cuvinte.Length];
-
-                for (int index = 0; index < cuvinte.Length; index++)
-                {
-                    terminale[index] = cuvinte[index];
-                }
-
-
-                actiuni = new string[stari.Length, terminale.Length];
-
-
-                // ----- Tabel actiuni
                 int fileLine = 3;
-                for (; fileLine < 3 + stari.Length; fileLine++)
+                for (; fileLine < 3 + states.Length; fileLine++)
                 {
-                    cuvinte = fileContentsArray[fileLine].Split();
+                    words = fileRows[fileLine].Split();
 
-                    for (int secondIndex = 0; secondIndex < cuvinte.Length; secondIndex++)
+                    for (int secondIndex = 0; secondIndex < words.Length; secondIndex++)
                     {
-                        actiuni[fileLine - 3, secondIndex] = cuvinte[secondIndex];
+                        actions[fileLine - 3, secondIndex] = words[secondIndex];
                     }
                 }
 
 
-                // ----- Linia cu terminalele salturilor
-                cuvinte = fileContentsArray[fileLine].Split();
-                terminaleSalt = new string[cuvinte.Length];
+                // ----- (terminale salt)
+                words = fileRows[fileLine].Split();
+                terminaleSalt = new string[words.Length];
 
-                for (int index = 0; index < cuvinte.Length; index++)
+                for (int index = 0; index < words.Length; index++)
                 {
-                    terminaleSalt[index] = cuvinte[index];
+                    terminaleSalt[index] = words[index];
                 }
 
-                salt = new string[stari.Length, terminaleSalt.Length];
+                salt = new string[states.Length, terminaleSalt.Length];
 
 
-                // ----- Citire terminale salturi :|
-                fileLine++;
-                int oldFileLine = fileLine;
-                for (; fileLine < oldFileLine + stari.Length; fileLine++)
+                // ----- (states / terminale salt)
+                int oldFileLine = ++fileLine;
+                for (; fileLine < oldFileLine + states.Length; fileLine++)
                 {
-                    cuvinte = fileContentsArray[fileLine].Split();
+                    words = fileRows[fileLine].Split();
 
-                    for (int secondIndex = 0; secondIndex < cuvinte.Length; secondIndex++)
+                    for (int secondIndex = 0; secondIndex < words.Length; secondIndex++)
                     {
-                        salt[fileLine - oldFileLine, secondIndex] = cuvinte[secondIndex];
+                        salt[fileLine - oldFileLine, secondIndex] = words[secondIndex];
                     }
                 }
 
 
-                // ----- Productii
-                int size = fileContentsArray.Length - fileLine;
-                productii = new string[size + 1, 2];
-                int numarProductie = 1;
-                for (; fileLine < fileContentsArray.Length - 1; fileLine++, numarProductie++)
-                {
-                    cuvinte = fileContentsArray[fileLine].Split();
+                // ----- Productions
+                int size = fileRows.Length - fileLine;
 
-                    productii[numarProductie, 0] = cuvinte[1];
-                    productii[numarProductie, 1] = cuvinte[0];
+                // Line    -> Production number (begins from 1)
+                // Column1 -> String that will be replaced
+                // Column2 -> Replacement string
+                productions = new string[size + 1, 2];
+
+                int productionNumber = 1;
+                for (; fileLine < fileRows.Length - 1; fileLine++, productionNumber++)
+                {
+                    words = fileRows[fileLine].Split();
+
+                    productions[productionNumber, 0] = words[1];
+                    productions[productionNumber, 1] = words[0];
                 }
 
 
-                // ----- Start
-                cuvinte = fileContentsArray[fileContentsArray.Length - 1].Split();
-                vectorStart = new string[cuvinte.Length];
-                for (int index = 0; index<cuvinte.Length; index++)
+                // ----- Last line (start elements)
+                words = fileRows[fileRows.Length - 1].Split();
+
+                startArray = new string[words.Length];
+                for (int index = 0; index<words.Length; index++)
                 {
-                    vectorStart[index] = cuvinte[index];
+                    startArray[index] = words[index];
                 }
 
+
+                // If reading was successfull, enable the generate button
+                buttonGenerate.Enabled = true;
             }
 
             else
@@ -150,144 +156,200 @@ namespace Formal_Language.UserControls
             }
         }
 
+
+        /// <summary>
+        /// Used to generate the push down string. Begins with the elements found
+        /// in 'startArray', then calls the recursive function GeneratePushDown.
+        /// Lastly, the result will be shown in a textbox.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void buttonGenerate_Click(object sender, EventArgs e)
         {
             result = new List<string>();
 
-            foreach (string start in vectorStart)
-                result.Add(start);
+            // ----- Reinitialize entry stack
+            entryStack = new Stack<string>();
+            string[] words = fileFirstRow.Split();
 
+            for (int index = words.Length - 1; index >= 0; index--)
+            {
+                entryStack.Push(words[index]);
+            }
+
+
+            // ----- Add start elements
+            foreach (string startElement in startArray)
+                result.Add(startElement);
+
+
+            // ----- Generate push down string and output the result
             result = GeneratePushDown(result);
+
             string stringResult = "";
-            foreach (string element in result)
-                stringResult += element + " ";
+            foreach (string resultElement in result)
+                stringResult += resultElement + " ";
 
             textBoxOutput.Text = stringResult;
         }
 
-        List<string> GeneratePushDown(List<string> lista)
-        {
-            string lastElement = lista.Last();
 
+        /// <summary>
+        /// Recursive function meant to generate the push down string.
+        /// </summary>
+        /// <param name="list">The list with the elements.</param>
+        /// <returns></returns>
+        List<string> GeneratePushDown(List<string> list)
+        {
+            string lastElement = list.Last();
+
+            // If the last element is a number
             try
             {
-                int linie = Convert.ToInt32(lastElement);
-                string intrare = stivaIntrare.Peek();
-                int coloana = GasesteIndexTerminal(terminale, intrare);
+                int line = Convert.ToInt32(lastElement);
+                string intrare = entryStack.Peek();
+                int column = GetElemetIndexInArray(intrare, terminals);
 
-                // Daca este salt
-                if (coloana < 0)
+                // Salt
+                if (column < 0)
                 {
-                    coloana = GasesteIndexSalt(terminaleSalt, intrare);
+                    column = GetElemetIndexInArray(intrare, terminaleSalt);
 
-                    if (salt[linie, coloana] != "NULL")
+                    if (salt[line, column] != "NULL")
                     {
-                        lista.Add( salt[linie, coloana] );
-                        return GeneratePushDown(lista);
+                        list.Add( salt[line, column] );
+                        return GeneratePushDown(list);
                     }
 
-                    return lista;
+                    // If this is reached, something went wrong
+                    // End recursion with current list
+                    return list;
                 }
 
-                // Daca este actiune
+                // Action
                 else
                 {
-                    string actiune = actiuni[linie, coloana];
+                    string action = actions[line, column];
 
-                    if (actiune == "acc")
+                    // The generated string is accepted
+                    if (action == "acc")
                     {
-                        return lista;
+                        return list;
                     }
 
-                    if (actiune[0] == 'd')
+                    // Deplasare
+                    if (action[0] == 'd')
                     {
-                        lista.Add( stivaIntrare.Pop() );
-                        lista.Add( actiune[1].ToString() );
+                        list.Add( entryStack.Pop() );
+                        list.Add( action[1].ToString() );
 
-                        return GeneratePushDown(lista);
+                        return GeneratePushDown(list);
                     }
 
-                    if (actiune[0] == 'r')
+                    // Reducere
+                    if (action[0] == 'r')
                     {
-                        int numarProductie = Convert.ToInt32( actiune[1].ToString() );
-                        string stergere = productii[numarProductie, 0];
-                        int indexStergere = GasesteIndexInlocuire(lista, stergere);
+                        int productionNumber = Convert.ToInt32( action[1].ToString() );
 
-                        lista.RemoveRange(indexStergere, lista.Count - indexStergere);
-                        lista.Add(productii[numarProductie, 1]);
+                        string stringToBeReplaced   = productions[productionNumber, 0];
+                        int stringToBeReplacedIndex = GetElementIndexInList(stringToBeReplaced, list);
 
-                        return GeneratePushDown(lista);
+                        // Remove all elements starting from the string's index
+                        list.RemoveRange(stringToBeReplacedIndex, list.Count - stringToBeReplacedIndex);
+
+                        // Add the replacement string
+                        list.Add( productions[productionNumber, 1] );
+
+                        return GeneratePushDown(list);
                     }
 
-                    return lista;
+                    // If this is reached, something went wrong
+                    // End recursion with current list
+                    return list;
                 }
-
-                
             }
 
+            // If the last element is not a number
             catch(Exception e)
             {
-                string ultimulElement = lista.Last();
-                string penultimulElement = lista.ElementAt(lista.Count - 2);
+                string penultimulElement = list.ElementAt(list.Count - 2);
 
-                int linie = Convert.ToInt32(penultimulElement);
-                int coloana = GasesteIndexTerminal(terminale, ultimulElement);
+                int line   = Convert.ToInt32(penultimulElement);
+                int column = GetElemetIndexInArray(lastElement, terminals);
 
-                // Daca este salt
-                if (coloana < 0)
+                // Salt
+                if (column < 0)
                 {
-                    coloana = GasesteIndexSalt(terminaleSalt, ultimulElement);
+                    column = GetElemetIndexInArray(lastElement, terminaleSalt);
 
-                    if (salt[linie, coloana] != "NULL")
+                    if (salt[line, column] != "NULL")
                     {
-                        lista.Add( salt[linie, coloana] );
-                        return GeneratePushDown(lista);
+                        list.Add( salt[line, column] );
+                        return GeneratePushDown(list);
                     }
 
-                    return lista;
+                    // If this is reached, something went wrong
+                    // End recursion with current list
+                    return list;
                 }
 
-                // Daca este actiune
+                // Action
                 else
                 {
-                    string actiune = actiuni[linie, coloana];
+                    string actiune = actions[line, column];
 
+                    // The generated string is accepted
                     if (actiune == "acc")
                     {
-                        return lista;
+                        return list;
                     }
 
+                    // Deplasare
                     if (actiune[0] == 'd')
                     {
-                        lista.Add(stivaIntrare.Pop());
-                        lista.Add(actiune[1].ToString());
+                        list.Add( entryStack.Pop() );
+                        list.Add( actiune[1].ToString() );
 
-                        return GeneratePushDown(lista);
+                        return GeneratePushDown(list);
                     }
 
+                    // Reducere
                     if (actiune[0] == 'r')
                     {
-                        int numarProductie = Convert.ToInt32( actiune[1].ToString() );
-                        string stergere = productii[numarProductie, 0];
-                        int indexStergere = GasesteIndexInlocuire(lista, stergere);
+                        int productionNumber = Convert.ToInt32( actiune[1].ToString() );
 
-                        lista.RemoveRange(indexStergere, lista.Count - indexStergere);
-                        lista.Add(productii[numarProductie, 1]);
+                        string stringToBeReplaced   = productions[productionNumber, 0];
+                        int stringToBeReplacedIndex = GetElementIndexInList(stringToBeReplaced, list);
 
-                        return GeneratePushDown(lista);
+                        // Remove all elements starting from the string's index
+                        list.RemoveRange(stringToBeReplacedIndex, list.Count - stringToBeReplacedIndex);
+
+                        // Add the replacement string
+                        list.Add(productions[productionNumber, 1]);
+
+                        return GeneratePushDown(list);
                     }
 
-                    return lista;
+                    // If this is reached, something went wrong
+                    // End recursion with current list
+                    return list;
                 }
             }
-
         }
 
-        int GasesteIndexTerminal(string[] terminale, string terminalCautat)
+
+        /// <summary>
+        /// Gets the index of the element in the provided array (if it exists), 
+        /// or -1 if it doesn't exist.
+        /// </summary>
+        /// <param name="element">The searched element.</param>
+        /// <param name="array">Array which will be searched.</param>
+        /// <returns>Index of the element (if it's found) or -1 (if it's not found).</returns>
+        int GetElemetIndexInArray(string element, string[] array)
         {
-            for (int index = 0; index < terminale.Length; index++)
+            for (int index = 0; index < array.Length; index++)
             {
-                if (terminale[index] == terminalCautat)
+                if (array[index] == element)
                 {
                     return index;
                 }
@@ -296,41 +358,36 @@ namespace Formal_Language.UserControls
             return -1;
         }
 
-        int GasesteIndexSalt(string[] salturi, string saltCautat)
+
+        /// <summary>
+        /// Gets the index of the element in the provided list (if it exists), 
+        /// or 1000000 if it doesn't exist. 
+        /// </summary>
+        /// <param name="element">The searched element.</param>
+        /// <param name="list">List which will be searched.</param>
+        /// <returns></returns>
+        int GetElementIndexInList(string element, List<string> list)
         {
-            for (int index = 0; index < salturi.Length; index++)
+            int minIndex = 1000000;
+
+            for (int index = 0; index < element.Length; index++)
             {
-                if (salturi[index] == saltCautat)
+                for (int listIndex = 0; listIndex < list.Count; listIndex++)
                 {
-                    return index;
-                }
-            }
+                    string listElement = list.ElementAt(listIndex);
 
-            return -1;
-        }
-
-        int GasesteIndexInlocuire(List<string> lista, string productie)
-        {
-            int indexMinim = 1000000;
-
-            for (int index = 0; index < productie.Length; index++)
-            {
-                for (int indexLista = 0; indexLista < lista.Count; indexLista++)
-                {
-                    string elementLista = lista.ElementAt(indexLista);
-
-                    foreach (char caracter in elementLista)
+                    foreach (char character in listElement)
                     {
-                        if (caracter == productie[index])
+                        if (character == element[index])
                         {
-                            indexMinim = (indexLista < indexMinim) ? indexLista : indexMinim;
+                            minIndex = (listIndex < minIndex) ? listIndex : minIndex;
                         }
                             
                     }
                 }
             }
 
-            return indexMinim;
+            return minIndex;
         }
     }
 }
