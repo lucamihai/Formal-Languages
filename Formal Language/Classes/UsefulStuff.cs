@@ -26,5 +26,58 @@ namespace Formal_Language.Classes
 
             return -1;
         }
+
+
+        /// <summary>
+        /// Gets the index of the element in the provided array (if it exists), 
+        /// or -1 if it doesn't exist.
+        /// </summary>
+        /// <param name="element">The searched element.</param>
+        /// <param name="array">Array which will be searched.</param>
+        /// <returns>Index of the element (if it's found) or -1 (if it's not found).</returns>
+        public static int GetElemetIndexInArray(string element, string[] array)
+        {
+            for (int index = 0; index < array.Length; index++)
+            {
+                if (array[index] == element)
+                {
+                    return index;
+                }
+            }
+
+            return -1;
+        }
+
+
+        /// <summary>
+        /// Gets the index of the element in the provided list (if it exists), 
+        /// or 1000000 if it doesn't exist. 
+        /// </summary>
+        /// <param name="element">The searched element.</param>
+        /// <param name="list">List which will be searched.</param>
+        /// <returns></returns>
+        public static int GetElementIndexInList(string element, List<string> list)
+        {
+            int minIndex = 1000000;
+
+            for (int index = 0; index < element.Length; index++)
+            {
+                for (int listIndex = 0; listIndex < list.Count; listIndex++)
+                {
+                    string listElement = list.ElementAt(listIndex);
+
+                    foreach (char character in listElement)
+                    {
+                        if (character == element[index])
+                        {
+                            minIndex = (listIndex < minIndex) ? listIndex : minIndex;
+                        }
+
+                    }
+                }
+            }
+
+            return minIndex;
+        }
     }
 }
