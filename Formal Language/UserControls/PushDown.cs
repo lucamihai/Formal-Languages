@@ -167,6 +167,8 @@ namespace Formal_Language.UserControls
         /// <param name="e"></param>
         private void buttonGenerate_Click(object sender, EventArgs e)
         {
+            labelResultStatus.Text = "";
+
             result = new List<string>();
 
             // ----- Reinitialize entry stack
@@ -207,7 +209,12 @@ namespace Formal_Language.UserControls
             // If the last element is a number
             try
             {
+                if (lastElement == "11" || lastElement == "10")
+                {
+                    int ceva = 0;
+                }
                 int line = Convert.ToInt32(lastElement);
+                
                 string intrare = entryStack.Peek();
                 int column = UsefulStuff.GetElemetIndexInArray(intrare, terminals);
 
@@ -224,6 +231,8 @@ namespace Formal_Language.UserControls
 
                     // If this is reached, something went wrong
                     // End recursion with current list
+                    labelResultStatus.ForeColor = System.Drawing.Color.Red;
+                    labelResultStatus.Text = "Fail";
                     return list;
                 }
 
@@ -235,6 +244,8 @@ namespace Formal_Language.UserControls
                     // The generated string is accepted
                     if (action == "acc")
                     {
+                        labelResultStatus.ForeColor = System.Drawing.Color.Green;
+                        labelResultStatus.Text = "Success";
                         return list;
                     }
 
@@ -242,7 +253,12 @@ namespace Formal_Language.UserControls
                     if (action[0] == 'd')
                     {
                         list.Add( entryStack.Pop() );
-                        list.Add( action[1].ToString() );
+                        string remaining = "";
+                        for (int index = 1; index < action.Length; index++)
+                        {
+                            remaining += action[index];
+                        }
+                        list.Add( remaining );
 
                         return GeneratePushDown(list);
                     }
@@ -250,7 +266,12 @@ namespace Formal_Language.UserControls
                     // Reducere
                     if (action[0] == 'r')
                     {
-                        int productionNumber = Convert.ToInt32( action[1].ToString() );
+                        string remaining = "";
+                        for (int index = 1; index < action.Length; index++)
+                        {
+                            remaining += action[index];
+                        }
+                        int productionNumber = Convert.ToInt32( remaining );
 
                         string stringToBeReplaced   = productions[productionNumber, 0];
                         int stringToBeReplacedIndex = UsefulStuff.GetElementIndexInList(stringToBeReplaced, list);
@@ -266,6 +287,8 @@ namespace Formal_Language.UserControls
 
                     // If this is reached, something went wrong
                     // End recursion with current list
+                    labelResultStatus.ForeColor = System.Drawing.Color.Red;
+                    labelResultStatus.Text = "Fail";
                     return list;
                 }
             }
@@ -291,33 +314,47 @@ namespace Formal_Language.UserControls
 
                     // If this is reached, something went wrong
                     // End recursion with current list
+                    labelResultStatus.ForeColor = System.Drawing.Color.Red;
+                    labelResultStatus.Text = "Fail";
                     return list;
                 }
 
                 // Action
                 else
                 {
-                    string actiune = actions[line, column];
+                    string action = actions[line, column];
 
                     // The generated string is accepted
-                    if (actiune == "acc")
+                    if (action == "acc")
                     {
+                        labelResultStatus.ForeColor = System.Drawing.Color.Green;
+                        labelResultStatus.Text = "Success";
                         return list;
                     }
 
                     // Deplasare
-                    if (actiune[0] == 'd')
+                    if (action[0] == 'd')
                     {
                         list.Add( entryStack.Pop() );
-                        list.Add( actiune[1].ToString() );
+                        string remaining = "";
+                        for (int index = 1; index < action.Length; index++)
+                        {
+                            remaining += action[index];
+                        }
+                        list.Add(remaining);
 
                         return GeneratePushDown(list);
                     }
 
                     // Reducere
-                    if (actiune[0] == 'r')
+                    if (action[0] == 'r')
                     {
-                        int productionNumber = Convert.ToInt32( actiune[1].ToString() );
+                        string remaining = "";
+                        for (int index = 1; index < action.Length; index++)
+                        {
+                            remaining += action[index];
+                        }
+                        int productionNumber = Convert.ToInt32( remaining );
 
                         string stringToBeReplaced   = productions[productionNumber, 0];
                         int stringToBeReplacedIndex = UsefulStuff.GetElementIndexInList(stringToBeReplaced, list);
@@ -333,6 +370,8 @@ namespace Formal_Language.UserControls
 
                     // If this is reached, something went wrong
                     // End recursion with current list
+                    labelResultStatus.ForeColor = System.Drawing.Color.Red;
+                    labelResultStatus.Text = "Fail";
                     return list;
                 }
             }
