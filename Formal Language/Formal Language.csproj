@@ -67,6 +67,12 @@
     <Compile Include="UserControls\StringGenerator.Designer.cs">
       <DependentUpon>StringGenerator.cs</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\TableGeneration.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\TableGeneration.Designer.cs">
+      <DependentUpon>TableGeneration.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -85,6 +91,9 @@
     <EmbeddedResource Include="UserControls\StringGenerator.resx">
       <DependentUpon>StringGenerator.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\TableGeneration.resx">
+      <DependentUpon>TableGeneration.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -100,6 +109,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="InputFiles\PushDown.txt" />
+    <Content Include="InputFiles\TableGeneration.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

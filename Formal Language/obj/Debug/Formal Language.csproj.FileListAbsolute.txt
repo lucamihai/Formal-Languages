@@ -33,3 +33,4 @@ C:\Users\Mihai\Desktop\Formal-Languages\Formal Language\obj\Debug\Formal Languag
 C:\Users\Mihai\Desktop\Formal-Languages\Formal Language\obj\Debug\Formal Language.csproj.CoreCompileInputs.cache
 C:\Users\Mihai\Desktop\Formal-Languages\Formal Language\obj\Debug\Formal Language.exe
 C:\Users\Mihai\Desktop\Formal-Languages\Formal Language\obj\Debug\Formal Language.pdb
+D:\Projects\Formal-Languages\Formal Language\obj\Debug\Formal_Language.UserControls.TableGeneration.resources

@@ -22,9 +22,8 @@ namespace Formal_Language
 
             userControls[0] = new StringGenerator();
             userControls[1] = new PushDown();
+            userControls[2] = new TableGeneration();
 
-            // TO-DO
-            userControls[2] = new UserControl();
             userControls[3] = new UserControl();
 
             foreach (UserControl userControl in userControls)
@@ -58,9 +57,23 @@ namespace Formal_Language
             }
         }
 
+        private void radioButton3_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioButton3.Checked)
+            {
+                userControls[2].Show();
+            }
+            else
+            {
+                userControls[2].Hide();
+            }
+        }
+
         void HideUserControls()
         {
 
         }
+
+        
     }
 }

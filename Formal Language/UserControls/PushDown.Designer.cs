@@ -42,20 +42,20 @@
             // 
             // textBoxOutput
             // 
-            this.textBoxOutput.Location = new System.Drawing.Point(147, 190);
-            this.textBoxOutput.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBoxOutput.Location = new System.Drawing.Point(110, 154);
+            this.textBoxOutput.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.textBoxOutput.Multiline = true;
             this.textBoxOutput.Name = "textBoxOutput";
             this.textBoxOutput.ReadOnly = true;
-            this.textBoxOutput.Size = new System.Drawing.Size(285, 86);
+            this.textBoxOutput.Size = new System.Drawing.Size(215, 71);
             this.textBoxOutput.TabIndex = 0;
             // 
             // buttonOpenFile
             // 
-            this.buttonOpenFile.Location = new System.Drawing.Point(147, 89);
-            this.buttonOpenFile.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.buttonOpenFile.Location = new System.Drawing.Point(110, 72);
+            this.buttonOpenFile.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.buttonOpenFile.Name = "buttonOpenFile";
-            this.buttonOpenFile.Size = new System.Drawing.Size(85, 38);
+            this.buttonOpenFile.Size = new System.Drawing.Size(64, 31);
             this.buttonOpenFile.TabIndex = 1;
             this.buttonOpenFile.Text = "Open file";
             this.buttonOpenFile.UseVisualStyleBackColor = true;
@@ -64,19 +64,20 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(89, 193);
+            this.label1.Location = new System.Drawing.Point(67, 157);
+            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(52, 17);
+            this.label1.Size = new System.Drawing.Size(40, 13);
             this.label1.TabIndex = 2;
             this.label1.Text = "Result:";
             // 
             // buttonGenerate
             // 
             this.buttonGenerate.Enabled = false;
-            this.buttonGenerate.Location = new System.Drawing.Point(147, 135);
-            this.buttonGenerate.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.buttonGenerate.Location = new System.Drawing.Point(110, 110);
+            this.buttonGenerate.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.buttonGenerate.Name = "buttonGenerate";
-            this.buttonGenerate.Size = new System.Drawing.Size(85, 38);
+            this.buttonGenerate.Size = new System.Drawing.Size(64, 31);
             this.buttonGenerate.TabIndex = 3;
             this.buttonGenerate.Text = "Generate";
             this.buttonGenerate.UseVisualStyleBackColor = true;
@@ -85,24 +86,25 @@
             // labelResultStatus
             // 
             this.labelResultStatus.AutoSize = true;
-            this.labelResultStatus.Location = new System.Drawing.Point(80, 220);
+            this.labelResultStatus.Location = new System.Drawing.Point(60, 179);
+            this.labelResultStatus.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.labelResultStatus.Name = "labelResultStatus";
-            this.labelResultStatus.Size = new System.Drawing.Size(48, 17);
+            this.labelResultStatus.Size = new System.Drawing.Size(37, 13);
             this.labelResultStatus.TabIndex = 4;
             this.labelResultStatus.Text = "Status";
             // 
             // PushDown
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.labelResultStatus);
             this.Controls.Add(this.buttonGenerate);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.buttonOpenFile);
             this.Controls.Add(this.textBoxOutput);
-            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "PushDown";
-            this.Size = new System.Drawing.Size(1365, 709);
+            this.Size = new System.Drawing.Size(896, 576);
             this.ResumeLayout(false);
             this.PerformLayout();
 
