@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Formal_Language.Classes;
 
 namespace Formal_Language.UserControls
 {
@@ -23,6 +24,11 @@ namespace Formal_Language.UserControls
         List<string> neterminali;
         List<string> productii;
         List<string> elemente;
+
+        List<List<string>> listeGenerate;
+
+
+        List<Functie> functii = new List<Functie>();
 
         #region Citire din fisier
 
@@ -115,7 +121,7 @@ namespace Formal_Language.UserControls
             List<string> listaStart = new List<string>();
             listaStart.Add(rezultat);
 
-            List< List<string> > listeGenerate = new List< List<string> >();
+            listeGenerate = new List< List<string> >();
             List< List<string> > listeMarcate = new List< List<string> >();
 
             List<string> I0 = new List<string>();
@@ -138,6 +144,9 @@ namespace Formal_Language.UserControls
             {
                 List<string> salt = Salt(I0, element);
                 listeGenerate.Add(salt);
+
+                //Functie functie = new Functie(0, element, listeGenerate.IndexOf(salt));
+                //functii.Add(functie);
             }
 
             while (listeGenerate.Count - 1 != listeMarcate.Count)
@@ -317,8 +326,6 @@ namespace Formal_Language.UserControls
                             rezultat.Add(inchidere);
                         }
                     }
-
-
                 }
             }
 
@@ -340,6 +347,9 @@ namespace Formal_Language.UserControls
                     rezultat.Add(productie);
                 }
             }
+
+            Functie functie = new Functie(listeGenerate.IndexOf(In), elementSalt);
+            functii.Add(functie);
 
             return rezultat;
         }
@@ -413,6 +423,8 @@ namespace Formal_Language.UserControls
 
         void FaCeva( List< List<string> > listeGenerate, List< List<string> > listeMarcate)
         {
+            int sizeListeGenerate = listeGenerate.Count;
+
             List<List<string>> listeDeAdaugat = new List<List<string>>();
             foreach (List<string> In in listeGenerate)
             {
@@ -427,6 +439,7 @@ namespace Formal_Language.UserControls
                     }
                     else
                     {
+
                         if (!ContineLista(listeMarcate, salt))
                         {
                             listeMarcate.Add(salt);
